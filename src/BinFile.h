@@ -1,3 +1,9 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2015-2016 Erik Timmers <e.timmers@gmail.com>.
+ * SPDX-FileCopyrightText: 2026 Elias Gheeraert <eliasgheeraert@gmail.com>.
+ */
+
 #ifndef BINFILE_H
 #define BINFILE_H
 
@@ -12,16 +18,15 @@ using namespace std;
 
 class BinHeader;
 
-class BinFile
-{
-public:
+class BinFile {
+  public:
     BinFile(string filename);
     ~BinFile();
     bool copy_image_header(string fromTag, string toTag);
     map<string, BinHeader*> get_headers(void);
     bool replace_image(string tag, string filename);
 
-private:
+  private:
     size_t _read_value(void);
     void _parse_header(void);
 

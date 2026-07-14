@@ -1,59 +1,54 @@
-# Motorola Moto Series' Boot Logo
+# Motorola / Lenovo boot logo unpack
 
-> The logo encoding and decoding are based on the script by _carock_[1].
-> Use these scripts at your own risk!
+>[!CAUTION]
+> **The logo encoding and decoding are based on the tool by [@eriktim](https://github.com/eriktim/moto-bootlogo) and script by [__carock__](http://forum.xda-developers.com/showpost.php?p=48891456&postcount=140).**
+> **This tool is only for unpacking the .png inside `logo.bin` image !**
 
 ## Dependencies
 
-* Rooted Motorola Moto (tested on Moto G [2013]);
-* `fastboot`;
-* `libpng`.
+* A `logo.bin` image from Motorola / Lenovo Hello UI.
+* `libpng` package installed.
 
 ## Build
 
-```bash
-make
+```console
+Mashopy@HollowBastion:~/moto-bootlogo$ make
+g++ -Wall -c -g -I/usr/include/libpng16  -o build/main.o src/main.cpp
+g++ -Wall -c -g -I/usr/include/libpng16  -o build/BinFile.o src/BinFile.cpp
+g++ -Wall -c -g -I/usr/include/libpng16  -o build/BinHeader.o src/BinHeader.cpp
+g++ -Wall -c -g -I/usr/include/libpng16  -o build/BinImage.o src/BinImage.cpp
+g++ -Wall -g build/main.o build/BinFile.o build/BinHeader.o build/BinImage.o -lpng16  -o build/moto-bootlogo
 ```
 
-## Usage
+## Usage example
+> **This tool has been tested with the `logo.bin` image from the Motorola Edge 70 Max / Lenovo Legion Y70 (New generation).**
 
-### Extract the original bin file
-
-You only need to do so once.
-
-```bash
-adb shell su -c "dd if=/dev/block/platform/msm_sdcc.1/by-name/logo of=/sdcard/logo.bin count=1 bs=634418"
-adb pull /sdcard/logo.bin .
+```console
+Mashopy@HollowBastion:~/moto-bootlogo$ build/moto-bootlogo logo.bin
+Parsing header of 'logo.bin'.
+Header size: 173 bytes.
+Header logo: 'logo_boot', starts at byte 1024 and occupies 9951372 bytes.
+Header logo: 'logo_battery', starts at byte 9952768 and occupies 61675 bytes.
+Header logo: 'logo_lowpower', starts at byte 10014720 and occupies 1853800 bytes.
+Header logo: 'logo_charge', starts at byte 11868672 and occupies 2164023 bytes.
+Header logo: 'switchconsole', starts at byte 14032896 and occupies 44588 bytes.
+Found 5 images.
+Image size: 626 x 626
+Image size: 1440 x 3168
+Image size: 1440 x 3168
+Image size: 1440 x 3168
+Image size: 610 x 135
 ```
 
-### Modify the bin file
+## License
 
-Choose one of the following options.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-#### Extract the logos from a bin file
+Key points to be aware of:
 
-```bash
-moto-bootlogo logo.bin
-```
+* You are free to use, modify, and distribute the software.
+* If you modify and use the software publicly, you must release your source code.
+* You must retain the same license (`AGPL-3.0`) when redistributing modified versions.
+* You cannot keep modifications private if the software is used to provide a networked service.
 
-#### Replace the 'unlocked bootloader' logo with the original logo
-
-```bash
-moto-bootlogo -f logo.bin
-```
-
-#### Replace the bootlogo with your own logo
-
-```bash
-moto-bootlogo -i bootlogo.png logo.bin
-```
-
-### Flash the modified bin file
-
-Make sure your device is connected in _fastboot mode_.
-
-```bash
-fastboot flash logo logo-custom.bin
-```
-
-[1] <http://forum.xda-developers.com/showpost.php?p=48891456&postcount=140>
+For full details, please refer to the [LICENSE](https://github.com/R0rt1z2/fenrir/tree/master/LICENSE) file.
